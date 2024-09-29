@@ -15,6 +15,8 @@ CruxReport Client is a web application built using React.js and TypeScript, desi
 - **TypeScript**: A superset of JavaScript that adds static types.
 - **Material UI**: A popular React UI framework that provides a robust set of components.
 - **Recharts**: A composable charting library built on React components.
+- **Vite**: A fast build tool and development server for modern web applications.
+
 
 ## Getting Started
 
