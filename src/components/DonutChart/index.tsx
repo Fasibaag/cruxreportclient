@@ -10,14 +10,18 @@ interface ChartDataItem {
 
 interface DonutChartProps {
   title: string;
+  value: string | number;
   chartData: ChartDataItem[];
   currentPercentage: number | string;
+  threshold: { label: string; color: string };
 }
 
 const DonutChart1: React.FC<DonutChartProps> = ({
   title,
   chartData,
   currentPercentage,
+  value,
+  threshold,
 }) => {
   useEffect(() => {
     const chartDom = document.getElementById(title) as HTMLElement;
@@ -51,17 +55,23 @@ const DonutChart1: React.FC<DonutChartProps> = ({
         {
           name: title,
           type: "pie",
-          radius: ["40%", "70%"],
+          radius: ["40%", "60%"],
           avoidLabelOverlap: false,
           label: {
             show: false,
             position: "center",
+            text: "hello",
           },
           emphasis: {
             label: {
               show: false,
               fontSize: "18",
               fontWeight: "bold",
+            },
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
             },
           },
           labelLine: {
@@ -77,26 +87,35 @@ const DonutChart1: React.FC<DonutChartProps> = ({
         {
           type: "text",
           left: "center",
-          top: "center",
+          bottom: "center",
           style: {
-            text: `${currentPercentage}%`,
+            text: `${value}`,
             textAlign: "center",
-            font: "bold 14px Arial",
-            fill: "#000",
+            font: "12px Arial",
+            fill: threshold.color || "#000",
           },
         },
         {
-          type: "line",
-          shape: {
-            x1: "50%", // Center of the chart
-            y1: "50%",
-            x2: x2, // Calculated x2
-            y2: y2, // Calculated y2
-          },
+          type: "text",
+          bottom: "10%",
+          left: "center",
           style: {
-            stroke: "#000000", // Color of the line
-            lineDash: [5, 5], // Dashed line style
-            lineWidth: 2,
+            text: `${currentPercentage} - ${value}(ms)`,
+            subtext: `${threshold.label}`,
+            textAlign: "center",
+            font: "12px Arial",
+            fill: threshold.color || "#000",
+          },
+        },
+        {
+          type: "text",
+          bottom: "15%",
+          left: "center",
+          style: {
+            text: `${threshold.label}`,
+            textAlign: "center",
+            font: "12px Arial",
+            fill: threshold.color || "#000",
           },
         },
       ],

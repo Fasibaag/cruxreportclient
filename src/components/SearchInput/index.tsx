@@ -10,7 +10,9 @@ import { ChangeEvent, SyntheticEvent, useState } from "react";
 
 // Regular Expression for URL or Domain Validation
 const urlRegex =
-  /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+)(\/[a-zA-Z0-9-._~:\/?#[\]@!$&'()*+,;=]*)?$/;
+  /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+// const urlRegex =
+//   /^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+)(\/[a-zA-Z0-9-._~:\/?#[\]@!$&'()*+,;=]*)*$/;
 
 interface DomainAutocompleteProps {
   onChange: (urls: string[]) => void;
@@ -134,7 +136,6 @@ const DomainAutocomplete: React.FC<DomainAutocompleteProps> = ({
               variant="contained"
               color="primary"
               type="submit"
-              disabled={error.length > 0}
             >
               Get Report
             </Button>

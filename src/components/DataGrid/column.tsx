@@ -1,24 +1,40 @@
 import BarChartIcon from "@mui/icons-material/BarChart";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { getThresholdCategory } from "./util";
 
 export const columns: GridColDef[] = [
+  {
+    field: "",
+    headerName: "  ",
+    filterable: false,
+    renderCell: (params) => {
+      const id = params.id;
+      return (
+        <Box display={"flex"} alignItems={"center"} gap={2}>
+          {id !== "sum" && id !== "avg" && (
+            <IconButton aria-label="open" color="info">
+              <BarChartIcon />
+            </IconButton>
+          )}
+        </Box>
+      );
+    },
+  },
+  {
+    field: "date",
+    headerName: "Date",
+    filterable: false,
+  },
   {
     field: "url",
     headerName: "Url",
     minWidth: 250,
     renderCell: (params) => {
       const value = params.value;
-      const id = params.id;
       return (
         <Box display={"flex"} alignItems={"center"} gap={2}>
-          <span>{value}</span>
-          {id !== "sum" && id !== "avg" && (
-            <IconButton aria-label="open" color="info">
-              <BarChartIcon />
-            </IconButton>
-          )}
+          <Typography>{value}</Typography>
         </Box>
       );
     },
@@ -54,7 +70,7 @@ export const columns: GridColDef[] = [
   },
   {
     field: "experimental_time_to_first_byte",
-    headerName: "Time to First Byte",
+    headerName: "Time to First Byte(ms)",
     minWidth: 200,
     renderCell: (params) => {
       const value = params.value.value;
@@ -64,7 +80,7 @@ export const columns: GridColDef[] = [
 
   {
     field: "cumulative_layout_shift",
-    headerName: "Cumulative Layout Shift (s)",
+    headerName: "Cumulative Layout Shift  (ms)",
     minWidth: 250,
     renderCell: (params) => {
       const value = params.value.value;

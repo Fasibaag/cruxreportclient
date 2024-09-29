@@ -12,6 +12,7 @@ export const useFetchReport = () => {
 
   const fetchCrUXData = async (urls: string[], formFactor: any) => {
     setLoading(true);
+    setError(null);
     try {
       if (urls) {
         const response = await sendRequestsInParallel(endpoint, {
@@ -21,10 +22,13 @@ export const useFetchReport = () => {
           },
         });
         setData(response.data);
+      } else {
+        setData({});
       }
     } catch (error: any) {
       // console.error("Error fetching CrUX data:", error);
       setError(error?.response?.data?.error);
+      setData({});
     } finally {
       setLoading(false);
     }

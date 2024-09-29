@@ -3,6 +3,7 @@ import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
 import { Box, Grid2, Stack } from "@mui/material";
 import React, { useCallback } from "react";
 import { useFetchReport } from "../hooks/usefetchReport";
+import AutoHideAlert from "./Alert";
 import DataGridReport from "./DataGrid/DataGrid";
 import { CustomAlert } from "./ErrorDialog";
 import SearchInput from "./SearchInput";
@@ -40,7 +41,7 @@ export const CruxReport = () => {
           {error && <CustomAlert message={error.status} />}
         </Grid2>
 
-        <Grid2 width={"80%"} justifyContent={"center"} my={2}>
+        <Grid2 width={"90%"} justifyContent={"center"} my={2}>
           <ToggleButtonGroup
             value={formfactor}
             onChange={(_event, newValue) => {
@@ -55,10 +56,12 @@ export const CruxReport = () => {
         </Grid2>
 
         {!error && (
-          <Box width={"80%"}>
+          <Box width={"90%"}>
             <DataGridReport data={data.success} loading={loading} />
           </Box>
         )}
+
+        {data && data.error?.length && <AutoHideAlert errors={data.error} />}
       </Grid2>
     </Stack>
   );

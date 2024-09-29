@@ -1,7 +1,7 @@
 import { Box, Grid2, Modal } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import MetricsOverview from "../MetricsOverview";
 import { columns } from "./column";
 import { getData } from "./util";
@@ -39,6 +39,15 @@ export default function DataGridReport({
 
   const handleClose = () => setOpenModal(false);
 
+  const [filterModel, setFilterModel] = React.useState({
+    items: [{ field: "age", operator: ">", value: "25" }],
+  });
+
+  const handleFilterChange = (newFilterModel) => {
+    // Custom filter logic can go here
+    setFilterModel(newFilterModel);
+  };
+
   return (
     <Grid2 container justifyContent={"center"} width={"100%"} height={400}>
       <DataGrid
@@ -51,6 +60,8 @@ export default function DataGridReport({
           setSelectedRow(row as any);
           setOpenModal(true);
         }}
+        filterModel={filterModel}
+        onFilterModelChange={handleFilterChange}
       />
       {selectedRow?.row && (
         <Modal
@@ -59,7 +70,7 @@ export default function DataGridReport({
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={{ ...style, width: 800 }}>
+          <Box sx={{ ...style, width: 900 }}>
             <MetricsOverview metric={selectedRow.row} />
           </Box>
         </Modal>

@@ -35,36 +35,43 @@ interface MetricThresholds {
 }
 
 export const getData = (data: any[]): (RowData | SummaryRow)[] => {
-  const rows: RowData[] = data.map((item) => ({
-    id: item.url, // Unique ID for each row
-    url: item.url,
-    interaction_to_next_paint: {
-      data: item.data.record.metrics.interaction_to_next_paint,
-      value: item.data.record.metrics.interaction_to_next_paint.percentiles.p75,
-    },
-    round_trip_time: {
-      data: item.data.record.metrics.round_trip_time,
-      value: item.data.record.metrics.round_trip_time.percentiles.p75,
-    },
-    cumulative_layout_shift: {
-      data: item.data.record.metrics.cumulative_layout_shift,
-      value: item.data.record.metrics.cumulative_layout_shift.percentiles.p75,
-    },
-    experimental_time_to_first_byte: {
-      data: item.data.record.metrics.experimental_time_to_first_byte,
-      value:
-        item.data.record.metrics.experimental_time_to_first_byte.percentiles
-          .p75,
-    },
-    first_contentful_paint: {
-      data: item.data.record.metrics.first_contentful_paint,
-      value: item.data.record.metrics.first_contentful_paint.percentiles.p75,
-    },
-    largest_contentful_paint: {
-      data: item.data.record.metrics.largest_contentful_paint,
-      value: item.data.record.metrics.largest_contentful_paint.percentiles.p75,
-    },
-  }));
+  const rows: RowData[] = data.map((item) => {
+    const metrics = item.data.record.metrics;
+    if (!metrics) {
+      throw new Error(`Metrics data is missing for URL: ${item.url}`);
+    }
+
+    const getMetricData = (metricName: keyof typeof metrics): MetricData => {
+      const metric = metrics[metricName];
+      if (!metric) {
+        // throw new Error(`Metric ${metricName} is missing for URL: ${item.url}`);
+        return {
+          data: null,
+          value: 0,
+        };
+      }
+      return {
+        data: metric,
+        value: metric.percentiles?.p75 || 0,
+      };
+    };
+
+    const date = item.data?.record?.collectionPeriod?.lastDate || {};
+
+    return {
+      id: item.url, // Unique ID for each row
+      url: item.url,
+      date: date?.day + "/" + date?.month + "/" + date?.year,
+      interaction_to_next_paint: getMetricData("interaction_to_next_paint"),
+      round_trip_time: getMetricData("round_trip_time"),
+      cumulative_layout_shift: getMetricData("cumulative_layout_shift"),
+      experimental_time_to_first_byte: getMetricData(
+        "experimental_time_to_first_byte"
+      ),
+      first_contentful_paint: getMetricData("first_contentful_paint"),
+      largest_contentful_paint: getMetricData("largest_contentful_paint"),
+    };
+  });
 
   const summaryRows: SummaryRow[] = data.length ? getsummaryRows(rows) : [];
 
@@ -205,7 +212,8 @@ interface TransformedData {
 interface DataTransformationResult {
   chartData: TransformedData[];
   currentPercentage: string;
-  threshold: { label: string; color: string } | string;
+  value: string;
+  threshold: { label: string; color: string };
 }
 
 export const dataTransformation = (
@@ -221,11 +229,13 @@ export const dataTransformation = (
   const transformedData: TransformedData[] = histogramData.map((item) => ({
     value: item.density,
     name: `${item.start}-${item.end || ">" + item.start} ms`,
+    ...getThresholdCategory(metric, currentValue),
   }));
 
   return {
     chartData: transformedData,
-    currentPercentage,
+    currentPercentage: `${currentPercentage}%`,
     threshold: getThresholdCategory(metric, currentValue),
+    value: `${currentValue}ms`,
   };
 };
