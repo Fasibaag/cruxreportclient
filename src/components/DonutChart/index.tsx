@@ -27,18 +27,6 @@ const DonutChart1: React.FC<DonutChartProps> = ({
     const chartDom = document.getElementById(title) as HTMLElement;
     const myChart = echarts.init(chartDom);
 
-    // Calculate the total value and determine the angle for the mark line
-    const totalValue = chartData.reduce(
-      (acc, item) => acc + Number(item.value),
-      0
-    );
-    const angle = (Number(currentPercentage) / totalValue) * 360;
-
-    // Calculate x2 and y2 based on the angle
-    const radius = 100; // Adjust based on your chart's size
-    const x2 = 150 + radius * Math.cos((angle * Math.PI) / 180); // Center + radius * cos(angle)
-    const y2 = 150 + radius * Math.sin((angle * Math.PI) / 180); // Center + radius * sin(angle)
-
     const option = {
       title: {
         subtext: `${title}`,
