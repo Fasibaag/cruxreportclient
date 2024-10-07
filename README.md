@@ -50,7 +50,7 @@ CruxReport Client is a web application built using React.js and TypeScript, desi
   - Enhanced insights are needed to help users understand the impact of the metrics on user experience.
 
 - **URL Processing for Large Sets**:
-  - For batches exceeding **500 URLs**, it is recommended to use **CrUX BigQuery**. 
+  - For batches exceeding **150 URLs**, it is recommended to use **CrUX BigQuery**. 
   - The current implementation does not support querying large datasets effectively, which may lead to performance issues.
 
 ### Improvements:
